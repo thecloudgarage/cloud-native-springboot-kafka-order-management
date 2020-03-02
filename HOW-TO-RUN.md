@@ -161,3 +161,9 @@ create a shipping and an invoice in the other two microservices.
 
 You can terminate all containers using `docker-compose down`.
 
+* If you want to see the kafka events, then either use the container id or the name as below
+```
+docker exec -it mskafka_kafka_1 /bin/sh
+kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic order --from-beginning
+```
+
