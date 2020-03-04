@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: postgresql
   labels:
-    name: postgresql
+    app: postgresql
 spec:
   ports:
     - name: postgresql
       port: 5432
       targetPort: postgresql
   selector:
-    name: postgresql
+    app: postgresql
