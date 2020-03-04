@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: postgresql
+    spec:
+      containers:
+      - name: postgresql
+        image: sameersbn/postgresql:9.5-3
+        imagePullPolicy: Always
+        env:
+        - name: DB_USER
+          value: dbuser
+        - name: DB_PASS
+          value: dbpass
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql
+          name: postgres
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - localhost
+            - -U
+            - postgres
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - localhost
+            - -U
+            - postgres
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+      volumes:
+      - name: postgresql
+        persistentVolumeClaim:
+          claimName: postgresql
