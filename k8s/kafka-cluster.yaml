@@ -24,6 +24,6 @@ spec:
         - name: KAFKA_ADVERTISED_HOST_NAME
           value: kafka
         - name: KAFKA_ZOOKEEPER_CONNECT
-          value: zookeeper:2181
+          value: "zookeeper:2181"
         - name: KAFKA_CREATE_TOPICS
-          value: order:5:1
+          value: "order:5:1"
