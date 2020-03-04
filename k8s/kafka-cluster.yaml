@@ -2,11 +2,13 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: kafka-deployment
+  namespace: kafka-cluster
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: kafka
+      app: kafka
   template:
     metadata:
       labels:
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: wurstmeister/kafka
+        image: thecloudgarage/k8s-springboot-kafka-order-management:kafka
         ports:
         - containerPort: 9092
         env:
