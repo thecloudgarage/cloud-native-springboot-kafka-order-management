@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: wurstmeister/kafka
+        image: thecloudgarage/k8s-springboot-kafka-order-management:kafka
         ports:
         - containerPort: 9092
         env:
