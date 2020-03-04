@@ -19,9 +19,9 @@ spec:
         image: thecloudgarage/k8s-springboot-kafka-order-management:postgresql
         imagePullPolicy: Always
         env:
-        - name: DB_USER
+        - name: POSTGRES_USER
           value: dbuser
-        - name: DB_PASS
+        - name: POSTGRES_PASSWORD
           value: dbpass
         ports:
         - name: postgresql
