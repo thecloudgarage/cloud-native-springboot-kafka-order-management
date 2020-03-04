@@ -6,7 +6,7 @@ sudo docker tag mskafka_shipping $dockerregistry/k8s-springboot-kafka-order-mana
 sudo docker tag mskafka_order $dockerregistry/k8s-springboot-kafka-order-management:mskafka_order
 sudo docker tag wurstmeister/kafka:2.12-2.3.0 $dockerregistry/k8s-springboot-kafka-order-management:kafka
 sudo docker tag wurstmeister/zookeeper:3.4.6 $dockerregistry/k8s-springboot-kafka-order-management:zookeeper
-sudo docker tag mskafka_postgres:latest $dockerregistry/k8s-springboot-kafka-order-management:postgres
+sudo docker tag mskafka_postgres:latest $dockerregistry/k8s-springboot-kafka-order-management:postgresql
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:mskafka_apache
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:mskafka_invoicing
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:mskafka_shipping
