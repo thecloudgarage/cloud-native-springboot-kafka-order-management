@@ -2,11 +2,13 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: kafka
+  labels:
+    app: kafka
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: kafka
+      app: kafka
   template:
     metadata:
       labels:
