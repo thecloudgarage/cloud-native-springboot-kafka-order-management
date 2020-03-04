@@ -12,5 +12,5 @@ sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:mskafka_i
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:mskafka_shipping
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:mskafka_order
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:kafka
-sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:postgres
+sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:postgresql
 sudo docker push $dockerregistry/k8s-springboot-kafka-order-management:zookeeper
