@@ -21,7 +21,7 @@ spec:
     spec:      
       containers:
       - name: apache
-        image: thecloudgarage/k8s-springboot-kafka-apache-management:mskafka_apache
+        image: thecloudgarage/k8s-springboot-kafka-order-management:mskafka_apache
         ports:
         - name: apache-http
           containerPort: 80
