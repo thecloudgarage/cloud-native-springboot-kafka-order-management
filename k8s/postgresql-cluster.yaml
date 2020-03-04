@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        name: postgresql
+        app: postgresql
     spec:
       containers:
       - name: postgresql
@@ -28,7 +28,7 @@ spec:
           containerPort: 5432
         volumeMounts:
         - mountPath: /var/lib/postgresql
-          name: postgres
+          name: postgresql
         livenessProbe:
           exec:
             command:
