@@ -37,36 +37,37 @@ chmod +x helper.sh
 
 * In this activity, we will prepare the jar builds and create/tag the docker images that will be used
 
-* In the same stride, we will push the docker images to a registry (public or private)
+* Before starting, login into the respective docker registry and alter the registry value in dockerpush.sh
 
-* In this case, we are using Docker Hub as the repository (alter the same)
-
-* Login into your Docker registry
-
-* Navigate to the sub-directory for the microservices-kafka build the JAR files
+```
+cd microservices-kafka
+./mvnw clean package -Dmaven.test.skip=true
+cd ..
+cd docker
+docker-compose build
+docker-compose up -d
+./dockerpush.sh
+```
 
 > NOTE: 
 
 * KAFKA host entries: 
     
     * Kafka host values are injected via SPRING_KAFKA_BOOTSTRAP_SERVERS environmental variable
-    
     * This variable is configured in the Docker-compose/k8s/cloud-foundry templates for each microservices deployment (Order, Shipping, Invoicing). 
-    
     * IF ON k8s, there is no need to change anything
-    
-        * The service names are used along with default kubernetes service discovery to communicate with the KAFKA host
-    
+    * The service names are used along with default kubernetes service discovery to communicate with the KAFKA host
     * We will need to change this SPRING_KAFKA_BOOTSTRAP_SERVERS variable only in the case of Cloud Foundry deployment
-    
-    * Springboot will automatically inject these kafka related entries from the environment variables set
+    * Springboot will automatically inject these kafka related entries AT RUN-TIME from the environment variables set
 
 * Postgresql host entries
 
     * Postgresql host values are set in the application.properties file
     
     > spring.datasource.url=jdbc:postgresql://${postgresql}/dborder
+    
     > spring.datasource.username=dbuser
+    
     > spring.datasource.password=dbpass
     
     * The postgresql host is also derived from an environment variable
@@ -77,10 +78,6 @@ chmod +x helper.sh
 
 * Environment variables used in the setup are configured in the respective templates for Docker-compose, k8s, or cloud-foundry
 
-```
-cd microservices-kafka
-./mvnw clean package -Dmaven.test.skip=true
-```
 
 * This will create the required JAR builds in each of the sub-directories for our microservices
 
