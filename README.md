@@ -1,5 +1,5 @@
-Microservice Kafka Sample
-==================
+Event Driven Architecture: Microservice & Kafka
+==============================================
 
 This is a sample to show how Kafka can be used for the communication
 between microservices demonstrating an Event Driven Architecture.
