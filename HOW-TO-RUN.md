@@ -4,6 +4,28 @@ This is a step-by-step guide how to run the example:
 
 ## Installation
 
+### Preparing a linux host
+
+* Avail of a linux host running ubuntu 18.04. This will be used to run all scripts, deployments, etc...
+
+* Clone this repo and navigate to sub-directory prep-work
+
+* Here you will find a bash script helper.sh. This script installs various tools/utilities
+
+```
+sudo su
+chmod +x helper.sh
+./helper.sh
+```
+* Tools/Utilies installed
+    * Docker
+    * Docker Compose
+    * PKS CLI
+    * CF CLI
+    * KOPS
+    * Kubectl
+    * OpenJDK 1.8 
+
 * The example is implemented in Java. See
    https://www.java.com/en/download/help/download_options.xml . The
    examples need to be compiled so you need to install a JDK (Java
