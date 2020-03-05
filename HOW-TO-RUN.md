@@ -20,11 +20,70 @@ chmod +x helper.sh
 * Tools/Utilies installed
     * Docker
     * Docker Compose
+    * AWS CLI 
     * PKS CLI
     * CF CLI
     * KOPS
     * Kubectl
     * OpenJDK 1.8 
+
+* Since we are using AWS as the IaaS in this activity, create the IAM user with admin privileges and obtain the required keys
+
+* Common commands that will be generally used during the activity are stored in the same sub-directory (filename: commands.txt)
+
+* Configure AWS CLI (aws configure) using the obtained keys
+
+### Preparing builds and docker images
+
+* In this activity, we will prepare the jar builds and create/tag the docker images that will be used
+
+* In the same stride, we will push the docker images to a registry (public or private)
+
+* In this case, we are using Docker Hub as the repository (alter the same)
+
+* Login into your Docker registry
+
+* Navigate to the sub-directory for the microservices-kafka build the JAR files
+
+> NOTE: 
+
+* KAFKA host entries: 
+    
+    * Kafka host values are injected via SPRING_KAFKA_BOOTSTRAP_SERVERS environmental variable
+    
+    * This variable is configured in the Docker-compose/k8s/cloud-foundry templates for each microservices deployment (Order, Shipping, Invoicing). 
+    
+    * IF ON k8s, there is no need to change anything
+    
+        * The service names are used along with default kubernetes service discovery to communicate with the KAFKA host
+    
+    * We will need to change this SPRING_KAFKA_BOOTSTRAP_SERVERS variable only in the case of Cloud Foundry deployment
+    
+    * Springboot will automatically inject these kafka related entries from the environment variables set
+
+* Postgresql host entries
+
+    * Postgresql host values are set in the application.properties file
+    
+    > spring.datasource.url=jdbc:postgresql://${postgresql}/dborder
+    > spring.datasource.username=dbuser
+    > spring.datasource.password=dbpass
+    
+    * The postgresql host is also derived from an environment variable
+    
+    * If on k8s, this 
+    
+    * The application.properties is located in the respective resources sub-directory (src/main/resources)
+
+* Environment variables used in the setup are configured in the respective templates for Docker-compose, k8s, or cloud-foundry
+
+```
+cd microservices-kafka
+./mvnw clean package -Dmaven.test.skip=true
+```
+
+* This will create the required JAR builds in each of the sub-directories for our microservices
+
 
 * The example is implemented in Java. See
    https://www.java.com/en/download/help/download_options.xml . The
