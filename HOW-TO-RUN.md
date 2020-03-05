@@ -58,7 +58,7 @@ docker-compose up -d
 
 ```
 pks login -a api.pks.thecloudgarage.com -u <username> -p <password> -k
-pks create <cluster-name> --external-hostname <cluster-name>.pks.<domain-name>.com --plan medium --num-nodes 3
+pks create-cluster <cluster-name> --external-hostname <cluster-name>.pks.<domain-name>.com --plan medium --num-nodes 3
 pks cluster <cluster-name>
 ```
 
