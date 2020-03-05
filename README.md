@@ -2,9 +2,9 @@ Microservice Kafka Sample
 ==================
 
 This is a sample to show how Kafka can be used for the communication
-between microservices.
+between microservices demonstrating an Event Driven Architecture.
 
-The project creates Docker containers.
+The project creates Docker containers that can be deployed on local machine, k8s clusters & Cloud-foundry.
 
 It uses three microservices:
 - Order to create orders. This services sends messages to Kafka. It
@@ -29,6 +29,8 @@ Technologies
 - Zookeeper
 - Postgres
 - Docker Compose to link the containers.
+- k8s
+- Pivotal Cloud Foundry (PAS & PKS)
 
 How To Run
 ----------
@@ -90,10 +92,10 @@ microservices. `Order` contains all the data for `Invoice` as well as `Delivery`
 JSON serialization is flexible. So when an `Order` is deserialized into `Invoice` and `Delivery` just the needed data is read.
 The additional data is just ignored.
 
-There are three Docker container for the microservices. The other
+There are three containers for the microservices. The other
 Docker containers are for Apache httpd, Kafka, Zookeeper and Postgres.
 
-Incoming http request are handled by the Apache httpd server. It is
+Incoming http request are handled by the Apache httpd server or Nginx (PAS). It is
 available at port 8080 of the Docker host
 e.g. <http://localhost:8080>.  HTTP requests are forwarded to the
 microservices. Kafka is used for the communication between the
