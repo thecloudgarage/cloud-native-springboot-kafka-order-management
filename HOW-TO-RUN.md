@@ -27,15 +27,11 @@ chmod +x helper.sh
     * Kubectl
     * OpenJDK 1.8 
 
-* Since we are using AWS as the IaaS in this activity, create the IAM user with admin privileges and obtain the required keys
-
+* Create the AWS IAM user with admin privileges and obtain the required keys
 * Common commands that will be generally used during the activity are stored in the same sub-directory (filename: commands.txt)
-
 * Configure AWS CLI (aws configure) using the obtained keys
 
 ### Preparing builds and docker images
-
-* In this activity, we will prepare the jar builds and create/tag the docker images that will be used
 
 * Before starting, login into the respective docker registry and alter the registry value in dockerpush.sh
 
@@ -49,199 +45,77 @@ docker-compose up -d
 ./dockerpush.sh
 ```
 
-> NOTE: 
+* Kafka & Postgresql entries are made via environmental variables
+* Kafka host is auto-injected via "SPRING_KAFKA_BOOTSTRAP_SERVERS' env variable
+* Postgresql host is set via "postgresql" env variable (leveraged in application.properties)
+* If on k8s, there is no need to set any env variables as deployment templates have them pre-set to the k8s service names
+* If on cloud-foundry, edit the manifest.yaml file in the sub-directory pcf-pas to set these accordingly
+* Also edit the nginx.conf in the pas-pcf sub-directory to insert the right urls for your cloud-foundry environment
 
-* KAFKA host entries: 
-    
-    * Kafka host values are injected via SPRING_KAFKA_BOOTSTRAP_SERVERS environmental variable
-    * This variable is configured in the Docker-compose/k8s/cloud-foundry templates for each microservices deployment (Order, Shipping, Invoicing). 
-    * IF ON k8s, there is no need to change anything
-    * The service names are used along with default kubernetes service discovery to communicate with the KAFKA host
-    * We will need to change this SPRING_KAFKA_BOOTSTRAP_SERVERS variable only in the case of Cloud Foundry deployment
-    * Springboot will automatically inject these kafka related entries AT RUN-TIME from the environment variables set
+### Deploying on k8s
 
-* Postgresql host entries
-
-    * Postgresql host values are set in the application.properties file
-    
-    > spring.datasource.url=jdbc:postgresql://${postgresql}/dborder
-    
-    > spring.datasource.username=dbuser
-    
-    > spring.datasource.password=dbpass
-    
-    * The postgresql host is also derived from an environment variable
-    
-    * If on k8s, this 
-    
-    * The application.properties is located in the respective resources sub-directory (src/main/resources)
-
-* Environment variables used in the setup are configured in the respective templates for Docker-compose, k8s, or cloud-foundry
-
-
-* This will create the required JAR builds in each of the sub-directories for our microservices
-
-
-* The example is implemented in Java. See
-   https://www.java.com/en/download/help/download_options.xml . The
-   examples need to be compiled so you need to install a JDK (Java
-   Development Kit). A JRE (Java Runtime Environment) is not
-   sufficient. After the installation you should be able to execute
-   `java` and `javac` on the command line.
-
-* The example run in Docker Containers. You need to install Docker
-  Community Edition, see https://www.docker.com/community-edition/
-  . You should be able to run `docker` after the installation.
-
-* The example need a lot of RAM. You should configure Docker to use 4
-  GB of RAM. Otherwise Docker containers might be killed due to lack
-  of RAM. On Windows and macOS you can find the RAM setting in the
-  Docker application under Preferences/ Advanced.
-  
-* After installing Docker you should also be able to run
-  `docker-compose`. If this is not possible, you might need to install
-  it separately. See https://docs.docker.com/compose/install/ .
-
-## Build
-
-Change to the directory `microservice-kafka` and run `./mvnw clean
-package` or `mvnw.cmd clean package` (Windows). This will take a while:
+* Using PKS CLI create your k8s cluster
 
 ```
-[~/microservice-kafka/microservice-kafka]./mvnw clean package
-....
-[INFO] 
-[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ microservice-kafka-invoicing ---
-[INFO] Building jar: /Users/wolff/microservice-kafka/microservice-kafka/microservice-kafka-invoicing/target/microservice-kafka-invoicing-0.0.1-SNAPSHOT.jar
-[INFO] 
-[INFO] --- spring-boot-maven-plugin:1.5.4.RELEASE:repackage (default) @ microservice-kafka-invoicing ---
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary:
-[INFO] 
-[INFO] microservice-kafka ................................. SUCCESS [  1.191 s]
-[INFO] microservice-kafka-order ........................... SUCCESS [ 37.543 s]
-[INFO] microservice-kafka-shipping ........................ SUCCESS [ 49.739 s]
-[INFO] microservice-kafka-invoicing ....................... SUCCESS [ 48.479 s]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 02:17 min
-[INFO] Finished at: 2017-09-08T13:43:15+02:00
-[INFO] Final Memory: 48M/427M
-[INFO] ------------------------------------------------------------------------
+pks login -a api.pks.thecloudgarage.com -u <username> -p <password> -k
+pks create <cluster-name> --external-hostname <cluster-name>.pks.<domain-name>.com --plan medium --num-nodes 3
+pks cluster <cluster-name>
 ```
 
-If this does not work:
-
-* Ensure that `settings.xml` in the directory `.m2` in your home
-directory contains no configuration for a specific Maven repo. If in
-doubt: delete the file.
-
-* The tests use some ports on the local machine. Make sure that no
-server runs in the background.
-In particular make sure the Kafka port 9092 and the HTTP port 8080 are
-available. There might be other ports that are needed, too.
-
-* Skip the tests: `./mvnw clean package -Dmaven.test.skip=true` or
-  `mvnw.cmd clean package -Dmaven.test.skip=true` (Windows).
-
-* In rare cases dependencies might not be downloaded correctly. In
-  that case: Remove the directory `repository` in the directory `.m2`
-  in your home directory. Note that this means all dependencies will
-  be downloaded again.
-
-## Run the containers
-
-First you need to build the Docker images. Change to the directory
-`docker` and run `docker-compose build`. This will download some base
-images, install software into Docker images and will therefore take
-its time:
+* Once cluster is ready, either edit the /etc/hosts or create DNS records for your cluster's Master via the --external-hostname value
+* Next start working with kubectl to deploy your applications
+* The deploy-everthing.sh script will create all resources in the appropriate sequence
+* Note the use of varying sleep timers to resolve any unment resource dependency in the sequence
 
 ```
-[~/microservice-kafka/docker]docker-compose build 
-...
-Step 7/7 : CMD apache2ctl -D FOREGROUND
- ---> Using cache
- ---> af6e0b1495b4
-Successfully built af6e0b1495b4
-Successfully tagged mskafka_apache:latest
-Removing intermediate container 1d59f8227b12
+sudo su
+pks get-credentials <cluster-name>
+kubectl config use-context <cluster-name>
+cd k8s
+chmod +x deploy-everything.sh
+./deploy-everything.sh
 ```
 
-Afterwards the Docker images should have been created. They have the prefix
-`mskafka`:
+* Verify the resource creations. If any errors., have fun troubleshooting!
 
 ```
-[~/microservice-kafka/docker]docker images 
-REPOSITORY                                              TAG                 IMAGE ID            CREATED             SIZE
-mskafka_invoicing                                       latest              1fddb3132141        43 seconds ago      214MB
-mskafka_shipping                                        latest              7340d766ea6f        46 seconds ago      214MB
-mskafka_order                                           latest              0f9848e55054        49 seconds ago      215MB
-mskafka_kafkacat                                        latest              461e8b02bb99        12 days ago          113MB
-mskafka_postgres                                        latest              2b2f4f035d6d        12 days ago          269MB
+kubectl get pods -n kafka-cluster
+kubectl get services -n kafka-cluster
+kubectl get pvc
+kubectl get pods 
+kubectl get services
 ```
 
-Now you can start the containers using `docker-compose up -d`. The
-`-d` option means that the containers will be started in the
-background and won't output their stdout to the command line:
+* Browse to any of the cluster's worker node's public-ec2-ip:31001 (nodePort value is set for apache web-proxy. You can change it)
+* Verify the application workflows
+
+### Observing kafka events
 
 ```
-[~/microservice-kafka/docker]docker-compose up -d
-Starting mskafka_zookeeper_1 ... 
-Starting mskafka_postgres_1 ... 
-Starting mskafka_zookeeper_1
-Starting mskafka_zookeeper_1 ... done
-Starting mskafka_kafka_1 ... 
-Starting mskafka_kafka_1 ... done
-Recreating mskafka_order_1 ... 
-Recreating mskafka_invoicing_1 ... 
-Recreating mskafka_invoicing_1
-Recreating mskafka_shipping_1 ... 
-Recreating mskafka_order_1
-Recreating mskafka_invoicing_1 ... done
-Recreating mskafka_apache_1 ... 
-Recreating mskafka_apache_1 ... done
-```
-
-During the first start the Docker images for Zookeeper and Kafka will be downloaded during this step.
-
-Check wether all containers are running:
-
-```
-[~/microservice-kafka/docker]docker ps
-CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS              PORTS                                                NAMES
-a87d3671d7f0        mskafka_apache                 "/bin/sh -c 'apach..."   6 minutes ago       Up 6 minutes        0.0.0.0:8080->80/tcp                                 mskafka_apache_1
-3efa376d06a2        mskafka_invoicing              "/bin/sh -c '/usr/..."   6 minutes ago       Up 6 minutes        8080/tcp                                             mskafka_invoicing_1
-3dfe4b38d9d9        mskafka_order                  "/bin/sh -c '/usr/..."   6 minutes ago       Up 6 minutes        8080/tcp                                             mskafka_order_1
-554109ba07a3        mskafka_shipping               "/bin/sh -c '/usr/..."   6 minutes ago       Up 6 minutes        8080/tcp                                             mskafka_shipping_1
-b1ea3311f031        wurstmeister/kafka:0.10.2.1    "start-kafka.sh"         12 days ago         Up 6 minutes                                                             mskafka_kafka_1
-c83247820e4d        mskafka_postgres               "docker-entrypoint..."   12 days ago         Up 6 minutes        5432/tcp                                             mskafka_postgres_1
-a397c26c1947        wurstmeister/zookeeper:3.4.6   "/bin/sh -c '/usr/..."   12 days ago         Up 6 minutes        22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp   mskafka_zookeeper_1
-```
-`docker ps -a`  also shows the terminated Docker containers. That is
-useful to see Docker containers that crashed right after they started.
-
-If one of the containers is not running, you can look at its logs using
-e.g.  `docker logs mskafka_order_1`. The name of the container is
-given in the last column of the output of `docker ps`. Looking at the
-logs even works after the container has been
-terminated. If the log says that the container has been `killed`, you
-need to increase the RAM assigned to Docker to e.g. 4GB. On Windows
-and macOS you can find the RAM setting in the Docker application under
-Preferences/ Advanced.
-  
-If you need to do more trouble shooting open a shell in the container
-using e.g. `docker exec -it mskafka_catalog_1 /bin/sh` or execute
-command using `docker exec mskafka_catalog_1 /bin/ls`.
-
-You can now go to http://localhost:8080/ and enter an order. That will
-create a shipping and an invoice in the other two microservices.
-
-You can terminate all containers using `docker-compose down`.
-
-* If you want to see the kafka events, then either use the container id or the name as below
-```
-docker exec -it mskafka_kafka_1 /bin/sh
+kubectl get pods -n kafka-cluster
+kubectl exec -it <kafka-pod-value> /bin/bash -n kafka-cluster
 kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic order --from-beginning
 ```
 
+### Deploying on Cloud Foundry
+
+* Ensure that you are logged into your cloud-foundry platform, e.g. cf login -a api.system.<domain-name>.com --skip-ssl-validation
+* The sub-directory pcf-pas has a manifest file that deploys all the microservices and a nginx web-proxy
+* Appropriately change the settings in nginx.conf to match your cloud-foundry environment
+* Also, change the environment variables in the manifest.yaml to the ec2-public-ip of the worker nodes (nodePort values set)
+   
+```
+cd pcf-pas
+cf push
+```
+
+## UN-WIND
+
+```
+cd pcf-pas
+chmod +x delete-all-apps.sh
+cd ..
+cd docker
+chmod +x destroy-everything.sh
+pks delete-cluster <cluster-name>
+```
