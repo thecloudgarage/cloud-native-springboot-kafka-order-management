@@ -15,7 +15,7 @@ sudo su
 chmod +x helper.sh
 ./helper.sh
 ```
-* Tools/Utilies installed
+### Tools/Utilies that will automatically get installed via helper.sh
     * Docker
     * Docker Compose
     * AWS CLI 
