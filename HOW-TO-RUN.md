@@ -97,6 +97,12 @@ kubectl exec -it <kafka-pod-value> /bin/bash -n kafka-cluster
 kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic order --from-beginning
 ```
 
+* Typical output: Example event structure
+```
+{"id":7,"customer":{"customerId":1,"name":"Wolff","firstname":"Eberhard","email":"eberhard.wolff@gmail.com"},"updated":1583563036580,"shippingAddress":{"street":"d1406, brigade gardenia, jardine block,","zip":"560078","city":"bangalore"},"billingAddress":{"street":"d1406, brigade gardenia, jardine block,","zip":"560078","city":"bangalore"},"orderLine":[{"count":10,"item":{"itemId":3,"name":"iPod","price":42.0}},{"count":20,"item":{"itemId":3,"name":"iPod","price":42.0}}],"numberOfLines":2}
+```
+
+
 ### Deploying on Cloud Foundry
 
 * Ensure that you are logged into your cloud-foundry platform, e.g. cf login -a api.system.<domain-name>.com --skip-ssl-validation
