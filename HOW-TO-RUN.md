@@ -65,6 +65,33 @@ pks cluster <cluster-name>
 
 >>>EDIT THE ENVIRONMENTAL VARIABLES
 
+* Navigate to k8s subdirectory and edit the kafka-cluster.yaml file.
+* Change the value of the advertised listeners to the public ec2 IP address. 
+* OPTIONAL: In case you want to run all services within the same k8s cluster and not perform parallel deployments on PAS for microservices, then you can name this variable to "kafka-service.kafka-cluster:9092"
+
+```
+        env:
+        - name: KAFKA_BROKER_ID
+          value: "1"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://3.88.5.201:31002"
+        - name: KAFKA_LISTENERS
+          value: "PLAINTEXT://0.0.0.0:9092"
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: "yes"
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zoo1:2181,zoo2:2181,zoo3:2181
+        - name: KAFKA_CREATE_TOPICS
+          value: mytopic:5:1
+```
+
+* All other environmental variables in the k8s templates are well-defined and need not be changed
+
+* Order, Shipping & Invoicing microservices running in the k8s cluster will connect to the KAFKA BOOTSTRAP SERVICE using k8s service names on the clusterIP. In addition, they will also connect to the postgresql database using its k8s service name on clusterIP
+
+* Once environmental variables are set in the kafka-cluster.yaml. Continue with the below commands
 
 ```
 sudo su
@@ -106,8 +133,10 @@ kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic order --from-beg
 
 * Ensure that you are logged into your cloud-foundry platform, e.g. cf login -a api.system.<domain-name>.com --skip-ssl-validation
 * The sub-directory pcf-pas has a manifest file that deploys all the microservices and a nginx web-proxy
+   
+>>>Change ENV VARIABLES manifest.yml. ONLY the IP addresses have to change. These have to be the public ec2 IP of any of the WORKER nodes. Port values are set to nodePort values hardcoded in the kafka service template and postgresql service template. So no need to change those in manifest.yml
+
 * Appropriately change the settings in nginx.conf to match your cloud-foundry environment
-* Also, change the environment variables in the manifest.yaml to the ec2-public-ip of the worker nodes (nodePort values set)
    
 ```
 cd pcf-pas
