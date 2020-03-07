@@ -25,9 +25,9 @@ chmod +x helper.sh
     * Kubectl
     * OpenJDK 1.8 
 
-* Create the AWS IAM user with admin privileges and obtain the required keys
+* Create the AWS IAM user with admin privileges and obtain the required keys (NOT REQUIRED IF PLANNING TO RUN VIA DOCKER COMPOSE ONLY)
 * Common commands that will be generally used during the activity are stored in the same sub-directory (filename: commands.txt)
-* Configure AWS CLI (aws configure) using the obtained keys
+* Configure AWS CLI (aws configure) using the obtained keys (NOT REQUIRED IF PLANNING TO RUN VIA DOCKER COMPOSE ONLY)
 
 
 ## Running Locally via Docker-Compose
