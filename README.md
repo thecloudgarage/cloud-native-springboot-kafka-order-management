@@ -35,23 +35,6 @@ Technologies
 How To Run
 ----------
 
-* Pre-requisites for Local docker: If on ubuntu 18.04, then install openJDK 1.8, docker & docker-compose
-```
-sudo apt update
-sudo apt install openjdk-8-jdk
-java -version
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-sudo apt update
-apt-cache policy docker-ce
-sudo apt install docker-ce
-sudo usermod -aG docker ubuntu
-sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-```
-* Pre-requisites for k8s (KOPS/PKS) and PCF PAS. Please ensure KOPS/PKS-CLI along with kubectl is installed. FOr PCF PAS, please ensure CF-CLI is installed
-
 See [How to run](HOW-TO-RUN.md) for details.
 
 Once you create an order in the order application, after a while the
