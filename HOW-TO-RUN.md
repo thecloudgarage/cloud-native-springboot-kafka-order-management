@@ -2,9 +2,7 @@
 
 This is a step-by-step guide how to run the example:
 
-## Installation
-
-### Preparing a linux host
+## Preparing a linux host
 
 * Avail of a linux host running ubuntu 18.04. This will be used to run all scripts, deployments, etc...
 
@@ -31,7 +29,8 @@ chmod +x helper.sh
 * Common commands that will be generally used during the activity are stored in the same sub-directory (filename: commands.txt)
 * Configure AWS CLI (aws configure) using the obtained keys
 
-### Running Locally via Docker-Compose
+
+## Running Locally via Docker-Compose
 
 * Before starting, login into the respective docker registry and alter the registry value in dockerpush.sh
 
@@ -48,9 +47,10 @@ docker-compose up -d
 * Kafka host is auto-injected via "SPRING_KAFKA_BOOTSTRAP_SERVERS' env variable
 * Postgresql host is set via "postgresql" env variable (leveraged in application.properties)
 
-### Deploying on k8s (Any cluster is OK, in this case we have used PKS)
 
-* Using PKS CLI create your k8s cluster
+## Deploying on k8s (Any cluster is OK, in this case we have used PKS)
+
+* Using PKS CLI create your k8s cluster (optionally, if are using KOPS, then use the KOPS method to create the cluster)
 
 ```
 pks login -a api.pks.thecloudgarage.com -u <username> -p <password> -k
@@ -68,6 +68,7 @@ pks cluster <cluster-name>
 * Navigate to k8s subdirectory and edit the kafka-cluster.yaml file.
 * Change the value of the advertised listeners to the public ec2 IP address. 
 * OPTIONAL: In case you want to run all services within the same k8s cluster and not perform parallel deployments on PAS for microservices, then you can name this variable to "kafka-service.kafka-cluster:9092"
+
 
 ```
         env:
