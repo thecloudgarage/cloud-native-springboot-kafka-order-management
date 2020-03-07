@@ -31,7 +31,7 @@ chmod +x helper.sh
 * Common commands that will be generally used during the activity are stored in the same sub-directory (filename: commands.txt)
 * Configure AWS CLI (aws configure) using the obtained keys
 
-### Preparing builds and docker images
+### Running Locally via Docker-Compose
 
 * Before starting, login into the respective docker registry and alter the registry value in dockerpush.sh
 
@@ -42,17 +42,13 @@ cd ..
 cd docker
 docker-compose build
 docker-compose up -d
-./dockerpush.sh
 ```
 
 * Kafka & Postgresql entries are made via environmental variables
 * Kafka host is auto-injected via "SPRING_KAFKA_BOOTSTRAP_SERVERS' env variable
 * Postgresql host is set via "postgresql" env variable (leveraged in application.properties)
-* If on k8s, there is no need to set any env variables as deployment templates have them pre-set to the k8s service names
-* If on cloud-foundry, edit the manifest.yaml file in the sub-directory pcf-pas to set these accordingly
-* Also edit the nginx.conf in the pas-pcf sub-directory to insert the right urls for your cloud-foundry environment
 
-### Deploying on k8s
+### Deploying on k8s (Any cluster is OK, in this case we have used PKS)
 
 * Using PKS CLI create your k8s cluster
 
@@ -66,6 +62,9 @@ pks cluster <cluster-name>
 * Next start working with kubectl to deploy your applications
 * The deploy-everthing.sh script will create all resources in the appropriate sequence
 * Note the use of varying sleep timers to resolve any unment resource dependency in the sequence
+
+>>>EDIT THE ENVIRONMENTAL VARIABLES
+
 
 ```
 sudo su
