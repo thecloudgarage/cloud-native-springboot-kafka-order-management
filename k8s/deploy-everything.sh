@@ -12,7 +12,7 @@ kubectl create -f zookeeper-service.yaml
 sleep 20
 kubectl create -f zookeeper-cluster.yaml
 sleep 2m
-kubectl create -f kafka-service-int-ext.yaml
+kubectl create -f kafka-service.yaml
 sleep 20
 kubectl create -f kafka-cluster.yaml
 sleep 2m
