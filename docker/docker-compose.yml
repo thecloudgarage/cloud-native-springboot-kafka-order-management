@@ -19,7 +19,7 @@ services:
      - invoicing
     ports:
      - "8080:80"
-  postgres:
+  postgresql:
     build: postgres
     environment:
       POSTGRES_PASSWORD: dbpass
@@ -28,21 +28,24 @@ services:
     build: ../microservice-kafka/microservice-kafka-order
     links:
      - kafka
-     - postgres
+     - postgresql
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      postgresql: postgresql
   shipping:
     build: ../microservice-kafka/microservice-kafka-shipping
     links:
      - kafka
-     - postgres
+     - postgresql
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      postgresql: postgresql
   invoicing:
     build: ../microservice-kafka/microservice-kafka-invoicing
     links:
      - kafka
-     - postgres
+     - postgresql
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      postgresql: postgresql
 
