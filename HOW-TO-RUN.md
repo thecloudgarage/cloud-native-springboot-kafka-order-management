@@ -121,7 +121,7 @@ kubectl get services
 ```
 kubectl get pods -n kafka-cluster
 kubectl exec -it <kafka-pod-value> /bin/bash -n kafka-cluster
-kafka-console-consumer --bootstrap-server kafka:9092 --topic order --from-beginning
+kafka-console-consumer --bootstrap-server kafka-service:9092 --topic order --from-beginning
 ```
 
 * Typical output: Example event structure
