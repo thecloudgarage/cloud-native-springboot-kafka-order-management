@@ -10,13 +10,11 @@ sudo apt install docker-ce -y
 sudo usermod -aG docker ubuntu
 sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-sudo su
 curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/kubectl
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install awscli -y
-sudo su
 curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
 chmod +x kops
 sudo mv kops /usr/local/bin/
